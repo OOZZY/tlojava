@@ -2,14 +2,21 @@ package tlo;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class StatisticsTest {
   private static final double EPSILON = tlo.Math.DOUBLE_EPSILON;
 
+  private tlo.Statistics statistics;
+
+  @Before
+  public void setUp() {
+    statistics = new tlo.Statistics();
+  }
+
   @Test
   public void statisticsConstructorShouldInitializeStatistics() {
-    tlo.Statistics statistics = new tlo.Statistics();
     assertEquals(0, statistics.size(), EPSILON);
     assertEquals(0, statistics.sum(), EPSILON);
     assertEquals(0, statistics.mean(), EPSILON);
@@ -22,7 +29,6 @@ public class StatisticsTest {
 
   @Test
   public void statisticsAddShouldUpdateStatisticsOverOneCall() {
-    tlo.Statistics statistics = new tlo.Statistics();
     statistics.add(50);
     assertEquals(1, statistics.size(), EPSILON);
     assertEquals(50, statistics.sum(), EPSILON);
@@ -36,7 +42,6 @@ public class StatisticsTest {
 
   @Test
   public void statisticsAddShouldUpdateStatisticsOverMultipleCalls() {
-    tlo.Statistics statistics = new tlo.Statistics();
     statistics.add(50);
     statistics.add(100);
     assertEquals(2, statistics.size(), EPSILON);
