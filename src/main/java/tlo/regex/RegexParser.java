@@ -49,16 +49,11 @@ public class RegexParser {
   }
 
   private Regex parseRegex(int level) {
-    if (logger.isTraceEnabled()) {
-      logger.trace("{}parseRegex: position: {}, remaining: \"{}\"",
-          createSpaces(level), position,
-          pattern.substring(position, pattern.length()));
-    }
+    String methodName = "parseRegex";
+    this.logParseCall(methodName, level);
 
     Regex regex = parseSequence(level + 1);
-    if (logger.isTraceEnabled()) {
-      logger.trace("{}parseRegex: regex {}", createSpaces(level), regex);
-    }
+    this.logParsedRegex(methodName, level, regex);
 
     if (position >= pattern.length()) {
       return regex;
@@ -69,10 +64,7 @@ public class RegexParser {
 
     while (accept('|')) {
       Regex nextRegex = parseSequence(level + 1);
-      if (logger.isTraceEnabled()) {
-        logger.trace("{}parseRegex: nextRegex {}", createSpaces(level),
-            nextRegex);
-      }
+      this.logParsedRegex(methodName, level, nextRegex);
       regexes.add(nextRegex);
 
       if (position >= pattern.length()) {
@@ -87,16 +79,11 @@ public class RegexParser {
   }
 
   private Regex parseSequence(int level) {
-    if (logger.isTraceEnabled()) {
-      logger.trace("{}parseSequence: position: {}, remaining: \"{}\"",
-          createSpaces(level), position,
-          pattern.substring(position, pattern.length()));
-    }
+    String methodName = "parseSequence";
+    this.logParseCall(methodName, level);
 
     Regex regex = parseItem(level + 1);
-    if (logger.isTraceEnabled()) {
-      logger.trace("{}parseSequence: regex {}", createSpaces(level), regex);
-    }
+    this.logParsedRegex(methodName, level, regex);
 
     List<Regex> regexes = new ArrayList<>();
     regexes.add(regex);
@@ -104,16 +91,11 @@ public class RegexParser {
     while (true) {
       try {
         Regex nextRegex = parseItem(level + 1);
-        if (logger.isTraceEnabled()) {
-          logger.trace("{}parseSequence: nextRegex {}", createSpaces(level),
-              nextRegex);
-        }
+        this.logParsedRegex(methodName, level, nextRegex);
         regexes.add(nextRegex);
       } catch (RegexParserException exception) {
-        if (logger.isTraceEnabled()) {
-          logger.trace("{}parseSequence: Error when parsing item: {}",
-              createSpaces(level), exception.getMessage());
-        }
+        this.logExceptionMessage(methodName, level, "Error when parsing item",
+            exception);
         if (regexes.size() < 2) {
           return regex;
         }
@@ -123,16 +105,11 @@ public class RegexParser {
   }
 
   private Regex parseItem(int level) {
-    if (logger.isTraceEnabled()) {
-      logger.trace("{}parseItem: position: {}, remaining: \"{}\"",
-          createSpaces(level), position,
-          pattern.substring(position, pattern.length()));
-    }
+    String methodName = "parseItem";
+    this.logParseCall(methodName, level);
 
     Regex regex = parseElement(level + 1);
-    if (logger.isTraceEnabled()) {
-      logger.trace("{}parseItem: regex {}", createSpaces(level), regex);
-    }
+    this.logParsedRegex(methodName, level, regex);
 
     if (accept('*')) {
       return new StarRegex(regex);
@@ -150,17 +127,12 @@ public class RegexParser {
   }
 
   private Regex parseElement(int level) {
-    if (logger.isTraceEnabled()) {
-      logger.trace("{}parseElement: position: {}, remaining: \"{}\"",
-          createSpaces(level), position,
-          pattern.substring(position, pattern.length()));
-    }
+    String methodName = "parseElement";
+    this.logParseCall(methodName, level);
 
     if (accept('(')) {
       Regex regex = parseRegex(level + 1);
-      if (logger.isTraceEnabled()) {
-        logger.trace("{}parseElement: regex {}", createSpaces(level), regex);
-      }
+      this.logParsedRegex(methodName, level, regex);
       if (accept(')')) {
         return new GroupRegex(regex);
       }
@@ -169,18 +141,13 @@ public class RegexParser {
     }
 
     Regex regex = parseCharacter(level + 1);
-    if (logger.isTraceEnabled()) {
-      logger.trace("{}parseElement: regex {}", createSpaces(level), regex);
-    }
+    this.logParsedRegex(methodName, level, regex);
     return regex;
   }
 
   private Regex parseCharacter(int level) {
-    if (logger.isTraceEnabled()) {
-      logger.trace("{}parseCharacter: position: {}, remaining: \"{}\"",
-          createSpaces(level), position,
-          pattern.substring(position, pattern.length()));
-    }
+    String methodName = "parseCharacter";
+    this.logParseCall(methodName, level);
 
     if (accept('\\')) {
       if (acceptMetacharacter()) {
@@ -250,5 +217,26 @@ public class RegexParser {
 
   public static boolean isMetaCharacter(char c) {
     return metacharacters.contains(c);
+  }
+
+  private void logParseCall(String methodName, int level) {
+    if (logger.isTraceEnabled()) {
+      logger.trace("{}{}: position: {}, remaining: \"{}\"", createSpaces(level),
+          methodName, position, pattern.substring(position, pattern.length()));
+    }
+  }
+
+  private void logParsedRegex(String methodName, int level, Regex regex) {
+    if (logger.isTraceEnabled()) {
+      logger.trace("{}{}: regex: {}", createSpaces(level), methodName, regex);
+    }
+  }
+
+  private void logExceptionMessage(String methodName, int level, String context,
+      Throwable exception) {
+    if (logger.isTraceEnabled()) {
+      logger.trace("{}{}: {}: {}", createSpaces(level), methodName, context,
+          exception.getMessage());
+    }
   }
 }
