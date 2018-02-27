@@ -64,10 +64,7 @@ public class RegexParser {
       regexes.add(nextRegex);
     }
 
-    if (regexes.size() < 2) {
-      return regex;
-    }
-    return new BarRegex(regexes);
+    return regexes.size() < 2 ? regex : new BarRegex(regexes);
   }
 
   private Regex parseSequence(int level) {
@@ -92,10 +89,7 @@ public class RegexParser {
       }
     }
 
-    if (regexes.size() < 2) {
-      return regex;
-    }
-    return new SequenceRegex(regexes);
+    return regexes.size() < 2 ? regex : new SequenceRegex(regexes);
   }
 
   private Regex parseItem(int level) {
