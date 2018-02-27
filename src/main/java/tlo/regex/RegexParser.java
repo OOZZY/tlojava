@@ -136,8 +136,8 @@ public class RegexParser {
       if (accept(isCharacter(')'))) {
         return new GroupRegex(regex);
       }
-      throw new RegexParserException(String
-          .format("Expected character ')' after position %s.", position - 1));
+      throw new RegexParserException(
+          String.format("Expected character ')' at position %s.", position));
     }
 
     Regex regex = parseCharacter(level + 1);
@@ -154,24 +154,18 @@ public class RegexParser {
         return new CharRegex(previousChar());
       }
       throw new RegexParserException(
-          String.format("Misplaced '\\' at position %s.", position - 1));
+          String.format("Expected metacharacter at position %s.", position));
     }
 
     if (accept(isCharacter('.'))) {
       return new DotRegex();
     }
 
-    if (currentChar(isMetaCharacter)) {
-      throw new RegexParserException(
-          String.format("Unexpected metacharacter '%s' at position %s.",
-              currentChar(), position));
-    }
-
     if (accept(isMetaCharacter.negate())) {
       return new CharRegex(previousChar());
     }
-    throw new RegexParserException(String
-        .format("Could not parse character after position %s.", position - 1));
+    throw new RegexParserException(
+        String.format("Expected non-metacharacter at position %s.", position));
   }
 
   private boolean accept(Predicate<Character> predicate) {
