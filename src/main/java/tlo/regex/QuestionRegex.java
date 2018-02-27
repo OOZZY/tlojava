@@ -6,17 +6,17 @@ public class QuestionRegex extends AbstractRecursiveRegex {
   }
 
   @Override
+  public String toString() {
+    return "Question[" + regex.toString() + "]";
+  }
+
+  @Override
   public boolean match(String string) {
     if (string.isEmpty()) {
       return true;
     }
 
     return regex.match(string);
-  }
-
-  @Override
-  public String toString() {
-    return "Question[" + regex.toString() + "]";
   }
 
   @Override

@@ -16,13 +16,13 @@ public class CharRegex implements Regex {
   }
 
   @Override
-  public boolean match(String string) {
-    return string.length() == 1 && string.charAt(0) == character;
+  public String toString() {
+    return "Char[" + character + "]";
   }
 
   @Override
-  public String toString() {
-    return "Char[" + character + "]";
+  public boolean match(String string) {
+    return string.length() == 1 && string.charAt(0) == character;
   }
 
   @Override

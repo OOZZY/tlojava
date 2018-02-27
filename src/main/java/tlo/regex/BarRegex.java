@@ -9,13 +9,13 @@ public class BarRegex extends AbstractRecursiveRegexList {
   }
 
   @Override
-  public boolean match(String string) {
-    return regexes.stream().anyMatch(regex -> regex.match(string));
+  public String toString() {
+    return "Bar" + regexes.toString();
   }
 
   @Override
-  public String toString() {
-    return "Bar" + regexes.toString();
+  public boolean match(String string) {
+    return regexes.stream().anyMatch(regex -> regex.match(string));
   }
 
   @Override

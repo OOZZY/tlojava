@@ -9,6 +9,11 @@ public class SequenceRegex extends AbstractRecursiveRegexList {
   }
 
   @Override
+  public String toString() {
+    return "Sequence" + regexes.toString();
+  }
+
+  @Override
   public boolean match(String string) {
     if (regexes.size() == 2) {
       return RegexUtils.matchAnySplit(regexes.get(0), regexes.get(1), string);
@@ -18,11 +23,6 @@ public class SequenceRegex extends AbstractRecursiveRegexList {
         regexes.subList(0, regexes.size() - 1));
     Regex last = regexes.get(regexes.size() - 1);
     return RegexUtils.matchAnySplit(allExceptLast, last, string);
-  }
-
-  @Override
-  public String toString() {
-    return "Sequence" + regexes.toString();
   }
 
   @Override

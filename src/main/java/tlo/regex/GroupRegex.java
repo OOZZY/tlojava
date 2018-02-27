@@ -6,13 +6,13 @@ public class GroupRegex extends AbstractRecursiveRegex {
   }
 
   @Override
-  public boolean match(String string) {
-    return regex.match(string);
+  public String toString() {
+    return "Group[" + regex.toString() + "]";
   }
 
   @Override
-  public String toString() {
-    return "Group[" + regex.toString() + "]";
+  public boolean match(String string) {
+    return regex.match(string);
   }
 
   @Override
