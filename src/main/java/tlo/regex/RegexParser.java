@@ -55,10 +55,6 @@ public class RegexParser {
     Regex regex = parseSequence(level + 1);
     this.logParsedRegex(methodName, level, regex);
 
-    if (position >= pattern.length()) {
-      return regex;
-    }
-
     List<Regex> regexes = new ArrayList<>();
     regexes.add(regex);
 
@@ -66,10 +62,6 @@ public class RegexParser {
       Regex nextRegex = parseSequence(level + 1);
       this.logParsedRegex(methodName, level, nextRegex);
       regexes.add(nextRegex);
-
-      if (position >= pattern.length()) {
-        return new BarRegex(regexes);
-      }
     }
 
     if (regexes.size() < 2) {
@@ -96,12 +88,14 @@ public class RegexParser {
       } catch (RegexParserException exception) {
         this.logExceptionMessage(methodName, level, "Error when parsing item",
             exception);
-        if (regexes.size() < 2) {
-          return regex;
-        }
-        return new SequenceRegex(regexes);
+        break;
       }
     }
+
+    if (regexes.size() < 2) {
+      return regex;
+    }
+    return new SequenceRegex(regexes);
   }
 
   private Regex parseItem(int level) {
