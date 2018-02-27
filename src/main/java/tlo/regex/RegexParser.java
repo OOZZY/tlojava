@@ -138,7 +138,7 @@ public class RegexParser {
     this.logParseCall(methodName, level);
 
     if (accept(isCharacter('\\'))) {
-      if (accept(isMetaCharacter)) {
+      if (accept(isMetacharacter)) {
         return new CharRegex(previousChar());
       }
       throw new RegexParserException(
@@ -149,7 +149,7 @@ public class RegexParser {
       return new DotRegex();
     }
 
-    if (accept(isMetaCharacter.negate())) {
+    if (accept(isMetacharacter.negate())) {
       return new CharRegex(previousChar());
     }
     throw new RegexParserException(
@@ -191,9 +191,9 @@ public class RegexParser {
     return arg -> arg == ch;
   }
 
-  private static final Predicate<Character> isMetaCharacter = RegexParser::isMetaCharacter;
+  private static final Predicate<Character> isMetacharacter = RegexParser::isMetacharacter;
 
-  public static boolean isMetaCharacter(char ch) {
+  public static boolean isMetacharacter(char ch) {
     return metacharacters.contains(ch);
   }
 
