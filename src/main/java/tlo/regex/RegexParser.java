@@ -161,8 +161,7 @@ public class RegexParser {
       return new DotRegex();
     }
 
-    if (accept(isMetaCharacter)) {
-      backtrack();
+    if (currentChar(isMetaCharacter)) {
       throw new RegexParserException(
           String.format("Unexpected metacharacter '%s' at position %s.",
               currentChar(), position));
@@ -176,12 +175,19 @@ public class RegexParser {
   }
 
   private boolean accept(Predicate<Character> predicate) {
+    if (currentChar(predicate)) {
+      advance();
+      return true;
+    }
+    return false;
+  }
+
+  private boolean currentChar(Predicate<Character> predicate) {
     if (position >= pattern.length()) {
       return false;
     }
 
     if (predicate.test(currentChar())) {
-      advance();
       return true;
     }
     return false;
@@ -197,10 +203,6 @@ public class RegexParser {
 
   private void advance() {
     position++;
-  }
-
-  private void backtrack() {
-    position--;
   }
 
   private static Predicate<Character> isCharacter(char ch) {
