@@ -128,9 +128,106 @@ public class RegexParser {
           String.format("Expected character ')' at position %s.", position));
     }
 
-    Regex regex = parseCharacter(level + 1);
+    Regex regex;
+    if (currentChar(isCharacter('['))) {
+      regex = parseCharClass(level + 1);
+    } else {
+      regex = parseCharacter(level + 1);
+    }
     this.logParsedRegex(methodName, level, regex);
     return regex;
+  }
+
+  private Regex parseCharClass(int level) {
+    String methodName = "parseCharClass";
+    this.logParseCall(methodName, level);
+
+    if (accept(isCharacter('['))) {
+      if (accept(isCharacter('^'))) {
+        List<CharRange> charRanges = parseCharClassItems(level + 1);
+        this.logParsedObject(methodName, level, "char class items", charRanges);
+        if (accept(isCharacter(']'))) {
+          return new CharClassRegex(true, charRanges);
+        }
+        throw new RegexParserException(
+            String.format("Expected character ']' at position %s.", position));
+      }
+
+      List<CharRange> charRanges = parseCharClassItems(level + 1);
+      this.logParsedObject(methodName, level, "char class items", charRanges);
+      if (accept(isCharacter(']'))) {
+        return new CharClassRegex(false, charRanges);
+      }
+      throw new RegexParserException(
+          String.format("Expected character ']' at position %s.", position));
+    }
+    throw new RegexParserException(
+        String.format("Expected character '[' at position %s.", position));
+  }
+
+  private List<CharRange> parseCharClassItems(int level) {
+    String methodName = "parseCharClassItems";
+    this.logParseCall(methodName, level);
+
+    CharRange charRange = parseCharClassItem(level + 1);
+    this.logParsedObject(methodName, level, "char class item", charRange);
+
+    List<CharRange> charRanges = new ArrayList<>();
+    charRanges.add(charRange);
+
+    while (true) {
+      try {
+        charRange = parseCharClassItem(level + 1);
+        this.logParsedObject(methodName, level, "char class item", charRange);
+        charRanges.add(charRange);
+      } catch (RegexParserException exception) {
+        this.logExceptionMessage(methodName, level,
+            "Error when parsing character class item", exception);
+        break;
+      }
+    }
+
+    return charRanges;
+  }
+
+  private CharRange parseCharClassItem(int level) {
+    String methodName = "parseCharClassItem";
+    this.logParseCall(methodName, level);
+
+    char first = parseCharClassCharacter(level + 1);
+    this.logParsedObject(methodName, level, "char class character", first);
+
+    if (accept(isCharacter('-'))) {
+      char last = parseCharClassCharacter(level + 1);
+      this.logParsedObject(methodName, level, "char class character", last);
+      if (first > last) {
+        throw new RegexParserException(String.format(
+            "Expected character >= '%s' at position %s", first, position - 1));
+      }
+      return new CharRange(first, last);
+    }
+
+    return new CharRange(first, first);
+  }
+
+  private char parseCharClassCharacter(int level) {
+    String methodName = "parseCharClassCharacter";
+    this.logParseCall(methodName, level);
+
+    if (accept(isCharacter('\\'))) {
+      if (accept(isCharClassMetacharacter)) {
+        return previousChar();
+      }
+      throw new RegexParserException(String.format(
+          "Expected character class metacharacter at position %s.", position));
+    }
+
+    if (accept(isCharClassMetacharacter.negate())) {
+      return previousChar();
+    }
+    throw new RegexParserException(String.format(
+        "Expected character class non-metacharacter at position %s.",
+        position));
   }
 
   private Regex parseCharacter(int level) {
@@ -191,6 +288,12 @@ public class RegexParser {
     return arg -> arg == ch;
   }
 
+  private static final Predicate<Character> isCharClassMetacharacter = RegexParser::isCharClassMetacharacter;
+
+  public static boolean isCharClassMetacharacter(char ch) {
+    return charClassMetacharacters.contains(ch);
+  }
+
   private static final Predicate<Character> isMetacharacter = RegexParser::isMetacharacter;
 
   public static boolean isMetacharacter(char ch) {
@@ -215,6 +318,14 @@ public class RegexParser {
     if (logger.isTraceEnabled()) {
       logger.trace("{}{}: {}: {}", createSpaces(level), methodName, context,
           exception.getMessage());
+    }
+  }
+
+  private void logParsedObject(String methodName, int level, String objectType,
+      Object object) {
+    if (logger.isTraceEnabled()) {
+      logger.trace("{}{}: {}: {}", createSpaces(level), methodName, objectType,
+          object);
     }
   }
 }

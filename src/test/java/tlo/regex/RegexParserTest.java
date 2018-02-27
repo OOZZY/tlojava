@@ -25,6 +25,25 @@ public class RegexParserTest {
     assertParseSucceeds(parser, "((\\\\+)*)?");
   }
 
+  @Test
+  public void testParsingCharacterClasses() {
+    RegexParser parser = new RegexParser();
+    if (logger.isDebugEnabled()) {
+      logger.debug(parser.parse("[a]"));
+      logger.debug(parser.parse("[a0]"));
+      logger.debug(parser.parse("[a0-9]"));
+      logger.debug(parser.parse("[a-z0]"));
+      logger.debug(parser.parse("[a-z0-9]"));
+      logger.debug(parser.parse("[^a]"));
+      logger.debug(parser.parse("[^a0]"));
+      logger.debug(parser.parse("[^a0-9]"));
+      logger.debug(parser.parse("[^a-z0]"));
+      logger.debug(parser.parse("[^a-z0-9]"));
+      logger.debug(parser.parse("[\\^]"));
+      logger.debug(parser.parse("[^\\^]"));
+    }
+  }
+
   public void assertParseSucceeds(RegexParser parser, String pattern) {
     Regex regex = parser.parse(pattern);
     assertEquals(regex.toRegexString(), pattern);
@@ -38,10 +57,20 @@ public class RegexParserTest {
   public void testParsingFailure() {
     RegexParser parser = new RegexParser();
     assertParseFails(parser, "");
-    assertParseFails(parser, "*");
     assertParseFails(parser, "(a");
-    assertParseFails(parser, "a|");
     assertParseFails(parser, "\\a");
+    assertParseFails(parser, "*");
+    assertParseFails(parser, "a|");
+  }
+
+  @Test
+  public void testParsingCharacterClassesFailure() {
+    RegexParser parser = new RegexParser();
+    assertParseFails(parser, "[^a");
+    assertParseFails(parser, "[a");
+    assertParseFails(parser, "[z-a]");
+    assertParseFails(parser, "[\\a]");
+    assertParseFails(parser, "[-]");
   }
 
   public void assertParseFails(RegexParser parser, String pattern) {
