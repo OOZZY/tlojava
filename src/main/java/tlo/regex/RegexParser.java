@@ -62,7 +62,7 @@ public class RegexParser {
     List<Regex> regexes = new ArrayList<>();
     regexes.add(regex);
 
-    while (accept('|')) {
+    while (accept(isCharacter('|'))) {
       Regex nextRegex = parseSequence(level + 1);
       this.logParsedRegex(methodName, level, nextRegex);
       regexes.add(nextRegex);
@@ -111,15 +111,15 @@ public class RegexParser {
     Regex regex = parseElement(level + 1);
     this.logParsedRegex(methodName, level, regex);
 
-    if (accept('*')) {
+    if (accept(isCharacter('*'))) {
       return new StarRegex(regex);
     }
 
-    if (accept('?')) {
+    if (accept(isCharacter('?'))) {
       return new QuestionRegex(regex);
     }
 
-    if (accept('+')) {
+    if (accept(isCharacter('+'))) {
       return new PlusRegex(regex);
     }
 
@@ -130,10 +130,10 @@ public class RegexParser {
     String methodName = "parseElement";
     this.logParseCall(methodName, level);
 
-    if (accept('(')) {
+    if (accept(isCharacter('('))) {
       Regex regex = parseRegex(level + 1);
       this.logParsedRegex(methodName, level, regex);
-      if (accept(')')) {
+      if (accept(isCharacter(')'))) {
         return new GroupRegex(regex);
       }
       throw new RegexParserException(String
@@ -149,42 +149,30 @@ public class RegexParser {
     String methodName = "parseCharacter";
     this.logParseCall(methodName, level);
 
-    if (accept('\\')) {
-      if (acceptMetacharacter()) {
+    if (accept(isCharacter('\\'))) {
+      if (accept(isMetaCharacter)) {
         return new CharRegex(previousChar());
       }
       throw new RegexParserException(
           String.format("Misplaced '\\' at position %s.", position - 1));
     }
 
-    if (accept('.')) {
+    if (accept(isCharacter('.'))) {
       return new DotRegex();
     }
 
-    if (acceptMetacharacter()) {
+    if (accept(isMetaCharacter)) {
       backtrack();
       throw new RegexParserException(
           String.format("Unexpected metacharacter '%s' at position %s.",
               currentChar(), position));
     }
 
-    if (acceptNonMetacharacter()) {
+    if (accept(isMetaCharacter.negate())) {
       return new CharRegex(previousChar());
     }
     throw new RegexParserException(String
         .format("Could not parse character after position %s.", position - 1));
-  }
-
-  private boolean accept(char c) {
-    return accept(currentChar -> currentChar == c);
-  }
-
-  private boolean acceptMetacharacter() {
-    return accept(currentChar -> isMetaCharacter(currentChar));
-  }
-
-  private boolean acceptNonMetacharacter() {
-    return accept(currentChar -> !isMetaCharacter(currentChar));
   }
 
   private boolean accept(Predicate<Character> predicate) {
@@ -215,8 +203,14 @@ public class RegexParser {
     position--;
   }
 
-  public static boolean isMetaCharacter(char c) {
-    return metacharacters.contains(c);
+  private static Predicate<Character> isCharacter(char ch) {
+    return arg -> arg == ch;
+  }
+
+  private static final Predicate<Character> isMetaCharacter = RegexParser::isMetaCharacter;
+
+  public static boolean isMetaCharacter(char ch) {
+    return metacharacters.contains(ch);
   }
 
   private void logParseCall(String methodName, int level) {
