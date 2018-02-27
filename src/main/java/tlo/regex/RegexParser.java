@@ -59,9 +59,9 @@ public class RegexParser {
     regexes.add(regex);
 
     while (accept(isCharacter('|'))) {
-      Regex nextRegex = parseSequence(level + 1);
-      this.logParsedRegex(methodName, level, nextRegex);
-      regexes.add(nextRegex);
+      regex = parseSequence(level + 1);
+      this.logParsedRegex(methodName, level, regex);
+      regexes.add(regex);
     }
 
     return regexes.size() < 2 ? regex : new BarRegex(regexes);
@@ -79,9 +79,9 @@ public class RegexParser {
 
     while (true) {
       try {
-        Regex nextRegex = parseItem(level + 1);
-        this.logParsedRegex(methodName, level, nextRegex);
-        regexes.add(nextRegex);
+        regex = parseItem(level + 1);
+        this.logParsedRegex(methodName, level, regex);
+        regexes.add(regex);
       } catch (RegexParserException exception) {
         this.logExceptionMessage(methodName, level, "Error when parsing item",
             exception);
