@@ -4,6 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -106,5 +107,23 @@ public class RegexTest {
     assertFalse(plus.match("b"));
     assertFalse(plus.match("ab"));
     assertFalse(plus.match("abc"));
+  }
+
+  @Test
+  public void testCharacterClass() {
+    List<CharRange> lowercaseRange = Arrays.asList(new CharRange('a', 'z'));
+    CharClassRegex lowercaseRegex = new CharClassRegex(false, lowercaseRange);
+    assertTrue(lowercaseRegex.match("a"));
+    assertTrue(lowercaseRegex.match("m"));
+    assertTrue(lowercaseRegex.match("z"));
+    assertFalse(lowercaseRegex.match("A"));
+    assertFalse(lowercaseRegex.match("0"));
+
+    CharClassRegex nonLowercaseRegex = new CharClassRegex(true, lowercaseRange);
+    assertFalse(nonLowercaseRegex.match("a"));
+    assertFalse(nonLowercaseRegex.match("m"));
+    assertFalse(nonLowercaseRegex.match("z"));
+    assertTrue(nonLowercaseRegex.match("A"));
+    assertTrue(nonLowercaseRegex.match("0"));
   }
 }
