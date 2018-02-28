@@ -42,7 +42,7 @@ public class RegexParserTest {
     assertParseSucceeds(parser, "[^\\^]");
   }
 
-  public void assertParseSucceeds(RegexParser parser, String pattern) {
+  private void assertParseSucceeds(RegexParser parser, String pattern) {
     Regex regex = parser.parse(pattern);
     assertEquals(pattern, regex.unparse());
     if (logger.isDebugEnabled()) {
@@ -70,7 +70,7 @@ public class RegexParserTest {
     assertParseFails(parser, "[-]");
   }
 
-  public void assertParseFails(RegexParser parser, String pattern) {
+  private void assertParseFails(RegexParser parser, String pattern) {
     try {
       parser.parse(pattern);
       fail();
