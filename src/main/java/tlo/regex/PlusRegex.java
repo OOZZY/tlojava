@@ -21,6 +21,6 @@ public class PlusRegex extends AbstractRecursiveRegex {
 
   @Override
   public String unparse() {
-    return regex.unparse() + "+";
+    return RegexUtils.forceToElement(regex).unparse() + "+";
   }
 }

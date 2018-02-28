@@ -1,5 +1,6 @@
 package tlo.regex;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -125,5 +126,35 @@ public class RegexTest {
     assertFalse(nonLowercaseRegex.match("z"));
     assertTrue(nonLowercaseRegex.match("A"));
     assertTrue(nonLowercaseRegex.match("0"));
+  }
+
+  @Test
+  public void testUnparsing() {
+    List<Regex> ab = Arrays.asList(new CharRegex('a'), new CharRegex('b'));
+    List<Regex> cd = Arrays.asList(new CharRegex('c'), new CharRegex('d'));
+    List<Regex> ef = Arrays.asList(new CharRegex('e'), new CharRegex('f'));
+    BarRegex aOrB = new BarRegex(ab);
+    BarRegex cOrD = new BarRegex(cd);
+    BarRegex eOrF = new BarRegex(ef);
+    SequenceRegex aThenB = new SequenceRegex(ab);
+    SequenceRegex cThenD = new SequenceRegex(cd);
+    SequenceRegex eThenF = new SequenceRegex(ef);
+    List<Regex> barList = Arrays.asList(aOrB, cOrD, eOrF);
+    List<Regex> sequenceList = Arrays.asList(aThenB, cThenD, eThenF);
+
+    Regex trickyToUnparse = new StarRegex(aThenB);
+    assertEquals("(ab)*", trickyToUnparse.unparse());
+
+    Regex barOfBars = new BarRegex(barList);
+    assertEquals("a|b|(c|d)|(e|f)", barOfBars.unparse());
+
+    Regex barOfSequences = new BarRegex(sequenceList);
+    assertEquals("ab|cd|ef", barOfSequences.unparse());
+
+    Regex sequenceOfBars = new SequenceRegex(barList);
+    assertEquals("(a|b)(c|d)(e|f)", sequenceOfBars.unparse());
+
+    Regex sequenceOfSequences = new SequenceRegex(sequenceList);
+    assertEquals("ab(cd)(ef)", sequenceOfSequences.unparse());
   }
 }

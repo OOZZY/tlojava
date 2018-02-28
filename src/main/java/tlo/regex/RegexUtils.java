@@ -55,4 +55,27 @@ public class RegexUtils {
     RegexParser parser = new RegexParser();
     return parser.parse(pattern);
   }
+
+  static Regex forceToSequence(Regex regex) {
+    if (regex.getClass() == BarRegex.class) {
+      return new GroupRegex(regex);
+    }
+    return regex;
+  }
+
+  static Regex forceToItem(Regex regex) {
+    if (regex.getClass() == SequenceRegex.class) {
+      return new GroupRegex(regex);
+    }
+    return forceToSequence(regex);
+  }
+
+  static Regex forceToElement(Regex regex) {
+    if (regex.getClass() == StarRegex.class
+        || regex.getClass() == QuestionRegex.class
+        || regex.getClass() == PlusRegex.class) {
+      return new GroupRegex(regex);
+    }
+    return forceToItem(regex);
+  }
 }

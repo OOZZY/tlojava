@@ -1,6 +1,7 @@
 package tlo.regex;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CharClassRegex implements Regex {
   private boolean negated;
@@ -46,7 +47,8 @@ public class CharClassRegex implements Regex {
 
   @Override
   public String unparse() {
-    // TODO Auto-generated method stub
-    return null;
+    String unparsedCharRanges = charRanges.stream().map(CharRange::unparse)
+        .collect(Collectors.joining(""));
+    return "[" + (this.negated ? "^" : "") + unparsedCharRanges + "]";
   }
 }

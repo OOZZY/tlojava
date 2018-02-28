@@ -28,28 +28,25 @@ public class RegexParserTest {
   @Test
   public void testParsingCharacterClasses() {
     RegexParser parser = new RegexParser();
-    if (logger.isDebugEnabled()) {
-      logger.debug(parser.parse("[a]"));
-      logger.debug(parser.parse("[a0]"));
-      logger.debug(parser.parse("[a0-9]"));
-      logger.debug(parser.parse("[a-z0]"));
-      logger.debug(parser.parse("[a-z0-9]"));
-      logger.debug(parser.parse("[^a]"));
-      logger.debug(parser.parse("[^a0]"));
-      logger.debug(parser.parse("[^a0-9]"));
-      logger.debug(parser.parse("[^a-z0]"));
-      logger.debug(parser.parse("[^a-z0-9]"));
-      logger.debug(parser.parse("[\\^]"));
-      logger.debug(parser.parse("[^\\^]"));
-    }
+    assertParseSucceeds(parser, "[a]");
+    assertParseSucceeds(parser, "[a0]");
+    assertParseSucceeds(parser, "[a0-9]");
+    assertParseSucceeds(parser, "[a-z0]");
+    assertParseSucceeds(parser, "[a-z0-9]");
+    assertParseSucceeds(parser, "[^a]");
+    assertParseSucceeds(parser, "[^a0]");
+    assertParseSucceeds(parser, "[^a0-9]");
+    assertParseSucceeds(parser, "[^a-z0]");
+    assertParseSucceeds(parser, "[^a-z0-9]");
+    assertParseSucceeds(parser, "[\\^]");
+    assertParseSucceeds(parser, "[^\\^]");
   }
 
   public void assertParseSucceeds(RegexParser parser, String pattern) {
     Regex regex = parser.parse(pattern);
-    assertEquals(regex.unparse(), pattern);
+    assertEquals(pattern, regex.unparse());
     if (logger.isDebugEnabled()) {
-      logger.debug(regex);
-      logger.debug(regex.unparse());
+      logger.debug("\"{}\" parses to: {}", pattern, regex);
     }
   }
 

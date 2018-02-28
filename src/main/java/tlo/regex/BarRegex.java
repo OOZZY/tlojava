@@ -1,5 +1,6 @@
 package tlo.regex;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,16 @@ public class BarRegex extends AbstractRecursiveRegexList {
 
   @Override
   public String unparse() {
-    return regexes.stream().map(Regex::unparse)
+    List<Regex> regexAndSequences = new ArrayList<>();
+    for (int i = 0; i < regexes.size(); ++i) {
+      if (i == 0) {
+        regexAndSequences.add(regexes.get(i));
+      } else {
+        regexAndSequences.add(RegexUtils.forceToSequence(regexes.get(i)));
+      }
+    }
+
+    return regexAndSequences.stream().map(Regex::unparse)
         .collect(Collectors.joining("|"));
   }
 }

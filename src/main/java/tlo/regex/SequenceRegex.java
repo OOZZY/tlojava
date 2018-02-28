@@ -1,5 +1,6 @@
 package tlo.regex;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,16 @@ public class SequenceRegex extends AbstractRecursiveRegexList {
 
   @Override
   public String unparse() {
-    return regexes.stream().map(Regex::unparse).collect(Collectors.joining(""));
+    List<Regex> sequenceAndItems = new ArrayList<>();
+    for (int i = 0; i < regexes.size(); ++i) {
+      if (i == 0) {
+        sequenceAndItems.add(RegexUtils.forceToSequence(regexes.get(i)));
+      } else {
+        sequenceAndItems.add(RegexUtils.forceToItem(regexes.get(i)));
+      }
+    }
+
+    return sequenceAndItems.stream().map(Regex::unparse)
+        .collect(Collectors.joining(""));
   }
 }

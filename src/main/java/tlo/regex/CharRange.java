@@ -39,4 +39,18 @@ public class CharRange {
   public boolean contains(char ch) {
     return this.first <= ch && ch <= this.last;
   }
+
+  public String unparse() {
+    if (first == last) {
+      return unparse(first);
+    }
+    return unparse(first) + "-" + unparse(last);
+  }
+
+  private static String unparse(char ch) {
+    if (RegexParser.isCharClassMetacharacter(ch)) {
+      return "\\" + Character.valueOf(ch).toString();
+    }
+    return Character.valueOf(ch).toString();
+  }
 }
