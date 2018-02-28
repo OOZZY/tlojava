@@ -99,4 +99,22 @@ public class RegexParserTest {
     assertTrue(regex.match("ac2"));
     assertTrue(regex.match("bc4"));
   }
+
+  @Test
+  public void testMatchingWithCharacterClasses() {
+    Regex regex = RegexUtils.parse("0[a-z]*9");
+    assertTrue(regex.match("09"));
+    assertTrue(regex.match("0a9"));
+    assertTrue(regex.match("0z9"));
+    assertTrue(regex.match("0az9"));
+    assertFalse(regex.match("049"));
+
+    regex = RegexUtils.parse("0[^a-z]*9");
+    assertTrue(regex.match("09"));
+    assertTrue(regex.match("0A9"));
+    assertTrue(regex.match("0Z9"));
+    assertTrue(regex.match("0AZ9"));
+    assertTrue(regex.match("049"));
+    assertFalse(regex.match("0a9"));
+  }
 }
