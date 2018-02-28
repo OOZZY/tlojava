@@ -45,7 +45,7 @@ public class CharClassRegex implements Regex {
   }
 
   @Override
-  public String toRegexString() {
+  public String unparse() {
     // TODO Auto-generated method stub
     return null;
   }

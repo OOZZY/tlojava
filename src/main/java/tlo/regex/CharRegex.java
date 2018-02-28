@@ -26,7 +26,7 @@ public class CharRegex implements Regex {
   }
 
   @Override
-  public String toRegexString() {
+  public String unparse() {
     if (RegexParser.isMetacharacter(character)) {
       return "\\" + Character.valueOf(character).toString();
     }

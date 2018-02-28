@@ -12,7 +12,7 @@ public class DotRegex implements Regex {
   }
 
   @Override
-  public String toRegexString() {
+  public String unparse() {
     return ".";
   }
 }

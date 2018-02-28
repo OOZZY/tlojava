@@ -72,7 +72,7 @@ public class RegexTest {
     SequenceRegex sequence = new SequenceRegex(
         Arrays.asList(group1, character, plus, star));
     logger.debug(sequence);
-    logger.debug(sequence.toRegexString());
+    logger.debug(sequence.unparse());
   }
 
   @Test

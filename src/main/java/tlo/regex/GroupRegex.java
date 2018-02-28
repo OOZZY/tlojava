@@ -16,7 +16,7 @@ public class GroupRegex extends AbstractRecursiveRegex {
   }
 
   @Override
-  public String toRegexString() {
-    return "(" + regex.toRegexString() + ")";
+  public String unparse() {
+    return "(" + regex.unparse() + ")";
   }
 }

@@ -19,8 +19,8 @@ public class BarRegex extends AbstractRecursiveRegexList {
   }
 
   @Override
-  public String toRegexString() {
-    return regexes.stream().map(Regex::toRegexString)
+  public String unparse() {
+    return regexes.stream().map(Regex::unparse)
         .collect(Collectors.joining("|"));
   }
 }

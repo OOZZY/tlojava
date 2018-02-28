@@ -46,10 +46,10 @@ public class RegexParserTest {
 
   public void assertParseSucceeds(RegexParser parser, String pattern) {
     Regex regex = parser.parse(pattern);
-    assertEquals(regex.toRegexString(), pattern);
+    assertEquals(regex.unparse(), pattern);
     if (logger.isDebugEnabled()) {
       logger.debug(regex);
-      logger.debug(regex.toRegexString());
+      logger.debug(regex.unparse());
     }
   }
 

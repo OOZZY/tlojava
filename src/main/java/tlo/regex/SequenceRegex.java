@@ -26,8 +26,7 @@ public class SequenceRegex extends AbstractRecursiveRegexList {
   }
 
   @Override
-  public String toRegexString() {
-    return regexes.stream().map(Regex::toRegexString)
-        .collect(Collectors.joining(""));
+  public String unparse() {
+    return regexes.stream().map(Regex::unparse).collect(Collectors.joining(""));
   }
 }
