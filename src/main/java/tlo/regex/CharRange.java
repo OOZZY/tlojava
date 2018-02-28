@@ -36,6 +36,36 @@ public class CharRange {
     return "CharRange['" + first + "'-'" + last + "']";
   }
 
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + first;
+    result = prime * result + last;
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    CharRange other = (CharRange) obj;
+    if (first != other.first) {
+      return false;
+    }
+    if (last != other.last) {
+      return false;
+    }
+    return true;
+  }
+
   public boolean contains(char ch) {
     return this.first <= ch && ch <= this.last;
   }

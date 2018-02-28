@@ -2,6 +2,7 @@ package tlo.regex;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -156,5 +157,30 @@ public class RegexTest {
 
     Regex sequenceOfSequences = new SequenceRegex(sequenceList);
     assertEquals("ab(cd)(ef)", sequenceOfSequences.unparse());
+  }
+
+  @Test
+  public void testHashCodeAndEquals() {
+    DotRegex dot1 = new DotRegex();
+    DotRegex dot2 = new DotRegex();
+    assertEquals(dot1.hashCode(), dot2.hashCode());
+    assertEquals(dot1, dot2);
+
+    StarRegex dotStar1 = new StarRegex(dot1);
+    StarRegex dotStar2 = new StarRegex(dot2);
+    assertEquals(dotStar1.hashCode(), dotStar2.hashCode());
+    assertEquals(dotStar1, dotStar2);
+
+    BarRegex dotOrDot1 = new BarRegex(Arrays.asList(dot1, dot2));
+    BarRegex dotOrDot2 = new BarRegex(Arrays.asList(dot2, dot1));
+    assertEquals(dotOrDot1.hashCode(), dotOrDot2.hashCode());
+    assertEquals(dotOrDot1, dotOrDot2);
+
+    PlusRegex dotPlus = new PlusRegex(dot1);
+    assertNotEquals(dotStar1, dotPlus);
+
+    SequenceRegex dotThenDot = new SequenceRegex(Arrays.asList(dot1, dot2));
+    assertNotEquals(dotOrDot1, dotThenDot);
+
   }
 }

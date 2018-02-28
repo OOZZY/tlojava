@@ -34,6 +34,41 @@ public class CharClassRegex implements Regex {
   }
 
   @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result
+        + ((charRanges == null) ? 0 : charRanges.hashCode());
+    result = prime * result + (negated ? 1231 : 1237);
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    CharClassRegex other = (CharClassRegex) obj;
+    if (charRanges == null) {
+      if (other.charRanges != null) {
+        return false;
+      }
+    } else if (!charRanges.equals(other.charRanges)) {
+      return false;
+    }
+    if (negated != other.negated) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
   public boolean match(String string) {
     if (string.length() != 1) {
       return false;
