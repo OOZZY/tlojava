@@ -143,20 +143,15 @@ public class RegexParser {
     this.logParseCall(methodName, level);
 
     if (accept(isCharacter('['))) {
+      boolean negated = false;
       if (accept(isCharacter('^'))) {
-        List<CharRange> charRanges = parseCharClassItems(level + 1);
-        this.logParsedObject(methodName, level, "char class items", charRanges);
-        if (accept(isCharacter(']'))) {
-          return new CharClassRegex(true, charRanges);
-        }
-        throw new RegexParserException(
-            String.format("Expected character ']' at position %s.", position));
+        negated = true;
       }
 
       List<CharRange> charRanges = parseCharClassItems(level + 1);
       this.logParsedObject(methodName, level, "char class items", charRanges);
       if (accept(isCharacter(']'))) {
-        return new CharClassRegex(false, charRanges);
+        return new CharClassRegex(negated, charRanges);
       }
       throw new RegexParserException(
           String.format("Expected character ']' at position %s.", position));
