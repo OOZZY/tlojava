@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BarRegex extends AbstractRecursiveRegexList {
-  public BarRegex(List<Regex> regexes) {
+public class AlternationRegex extends AbstractRecursiveRegexList {
+  public AlternationRegex(List<Regex> regexes) {
     super(regexes);
   }
 
   @Override
   public String toString() {
-    return "Bar" + regexes.toString();
+    return "Alternation" + regexes.toString();
   }
 
   @Override

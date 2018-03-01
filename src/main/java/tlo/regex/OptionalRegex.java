@@ -1,13 +1,13 @@
 package tlo.regex;
 
-public class QuestionRegex extends AbstractRecursiveRegex {
-  public QuestionRegex(Regex regex) {
+public class OptionalRegex extends AbstractRecursiveRegex {
+  public OptionalRegex(Regex regex) {
     super(regex);
   }
 
   @Override
   public String toString() {
-    return "Question[" + regex.toString() + "]";
+    return "Optional[" + regex.toString() + "]";
   }
 
   @Override

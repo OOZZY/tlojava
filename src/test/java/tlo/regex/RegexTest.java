@@ -58,14 +58,14 @@ public class RegexTest {
 
   @Test
   public void testToRegexString() {
-    BarRegex bar = new BarRegex(
+    AlternationRegex alternation = new AlternationRegex(
         Arrays.asList(new CharRegex('a'), new CharRegex('b')));
-    GroupRegex group1 = new GroupRegex(bar);
+    GroupRegex group1 = new GroupRegex(alternation);
 
     CharRegex character = new CharRegex('c');
 
-    QuestionRegex question = new QuestionRegex(new CharRegex('f'));
-    GroupRegex group2 = new GroupRegex(question);
+    OptionalRegex optional = new OptionalRegex(new CharRegex('f'));
+    GroupRegex group2 = new GroupRegex(optional);
     PlusRegex plus = new PlusRegex(group2);
 
     DotRegex dot = new DotRegex();
@@ -90,13 +90,13 @@ public class RegexTest {
   }
 
   @Test
-  public void testQuestion() {
-    QuestionRegex question = new QuestionRegex(new CharRegex('a'));
-    assertTrue(question.match(""));
-    assertTrue(question.match("a"));
-    assertFalse(question.match("aa"));
-    assertFalse(question.match("b"));
-    assertFalse(question.match("ab"));
+  public void testOptional() {
+    OptionalRegex optional = new OptionalRegex(new CharRegex('a'));
+    assertTrue(optional.match(""));
+    assertTrue(optional.match("a"));
+    assertFalse(optional.match("aa"));
+    assertFalse(optional.match("b"));
+    assertFalse(optional.match("ab"));
   }
 
   @Test
@@ -134,26 +134,26 @@ public class RegexTest {
     List<Regex> ab = Arrays.asList(new CharRegex('a'), new CharRegex('b'));
     List<Regex> cd = Arrays.asList(new CharRegex('c'), new CharRegex('d'));
     List<Regex> ef = Arrays.asList(new CharRegex('e'), new CharRegex('f'));
-    BarRegex aOrB = new BarRegex(ab);
-    BarRegex cOrD = new BarRegex(cd);
-    BarRegex eOrF = new BarRegex(ef);
+    AlternationRegex aOrB = new AlternationRegex(ab);
+    AlternationRegex cOrD = new AlternationRegex(cd);
+    AlternationRegex eOrF = new AlternationRegex(ef);
     SequenceRegex aThenB = new SequenceRegex(ab);
     SequenceRegex cThenD = new SequenceRegex(cd);
     SequenceRegex eThenF = new SequenceRegex(ef);
-    List<Regex> barList = Arrays.asList(aOrB, cOrD, eOrF);
+    List<Regex> alternationList = Arrays.asList(aOrB, cOrD, eOrF);
     List<Regex> sequenceList = Arrays.asList(aThenB, cThenD, eThenF);
 
     Regex trickyToUnparse = new StarRegex(aThenB);
     assertEquals("(ab)*", trickyToUnparse.unparse());
 
-    Regex barOfBars = new BarRegex(barList);
-    assertEquals("a|b|(c|d)|(e|f)", barOfBars.unparse());
+    Regex alternationOfAlternations = new AlternationRegex(alternationList);
+    assertEquals("a|b|(c|d)|(e|f)", alternationOfAlternations.unparse());
 
-    Regex barOfSequences = new BarRegex(sequenceList);
-    assertEquals("ab|cd|ef", barOfSequences.unparse());
+    Regex alternationOfSequences = new AlternationRegex(sequenceList);
+    assertEquals("ab|cd|ef", alternationOfSequences.unparse());
 
-    Regex sequenceOfBars = new SequenceRegex(barList);
-    assertEquals("(a|b)(c|d)(e|f)", sequenceOfBars.unparse());
+    Regex sequenceOfAlternations = new SequenceRegex(alternationList);
+    assertEquals("(a|b)(c|d)(e|f)", sequenceOfAlternations.unparse());
 
     Regex sequenceOfSequences = new SequenceRegex(sequenceList);
     assertEquals("ab(cd)(ef)", sequenceOfSequences.unparse());
@@ -171,8 +171,10 @@ public class RegexTest {
     assertEquals(dotStar1.hashCode(), dotStar2.hashCode());
     assertEquals(dotStar1, dotStar2);
 
-    BarRegex dotOrDot1 = new BarRegex(Arrays.asList(dot1, dot2));
-    BarRegex dotOrDot2 = new BarRegex(Arrays.asList(dot2, dot1));
+    AlternationRegex dotOrDot1 = new AlternationRegex(
+        Arrays.asList(dot1, dot2));
+    AlternationRegex dotOrDot2 = new AlternationRegex(
+        Arrays.asList(dot2, dot1));
     assertEquals(dotOrDot1.hashCode(), dotOrDot2.hashCode());
     assertEquals(dotOrDot1, dotOrDot2);
 

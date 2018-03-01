@@ -64,7 +64,7 @@ public class RegexParser {
       regexes.add(regex);
     }
 
-    return regexes.size() < 2 ? regex : new BarRegex(regexes);
+    return regexes.size() < 2 ? regex : new AlternationRegex(regexes);
   }
 
   private Regex parseSequence(int level) {
@@ -104,7 +104,7 @@ public class RegexParser {
     }
 
     if (accept(isCharacter('?'))) {
-      return new QuestionRegex(regex);
+      return new OptionalRegex(regex);
     }
 
     if (accept(isCharacter('+'))) {

@@ -58,7 +58,7 @@ public class RegexUtils {
 
   static Regex forceToElement(Regex regex) {
     if (regex.getClass() == StarRegex.class
-        || regex.getClass() == QuestionRegex.class
+        || regex.getClass() == OptionalRegex.class
         || regex.getClass() == PlusRegex.class) {
       return new GroupRegex(regex);
     }
@@ -73,7 +73,7 @@ public class RegexUtils {
   }
 
   static Regex forceToSequence(Regex regex) {
-    if (regex.getClass() == BarRegex.class) {
+    if (regex.getClass() == AlternationRegex.class) {
       return new GroupRegex(regex);
     }
     return regex;
