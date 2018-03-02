@@ -15,13 +15,9 @@ import static tlo.regex.RegexUtils.plus;
 import static tlo.regex.RegexUtils.seq;
 import static tlo.regex.RegexUtils.star;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 public class RegexTest {
-  private static final Logger logger = LogManager.getLogger(RegexTest.class);
-
   @Test
   public void testCharacter() {
     assertFalse(chr('a').match("b"));
@@ -159,5 +155,18 @@ public class RegexTest {
   private void assertSimplification(String unsimplified, String simplified) {
     Regex regex = RegexUtils.parse(unsimplified);
     assertEquals(simplified, regex.simplify().unparse());
+  }
+
+  @Test
+  public void testSimplify() {
+    assertSimplification(alt(chr('a'), chr('a')), chr('a'));
+    assertSimplification(star(star(chr('a'))), star(chr('a')));
+    assertSimplification(star(seq(star(chr('a')), star(chr('b')))),
+        star(alt(chr('a'), chr('b'))));
+    assertSimplification(grp(chr('a')), chr('a'));
+  }
+
+  private void assertSimplification(Regex unsimplified, Regex simplified) {
+    assertEquals(simplified, unsimplified.simplify());
   }
 }
