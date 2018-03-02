@@ -145,19 +145,6 @@ public class RegexTest {
   }
 
   @Test
-  public void testSimplification() {
-    assertSimplification("a|a", "a");
-    assertSimplification("(a*)*", "a*");
-    assertSimplification("(a*b*)*", "(a|b)*");
-    assertSimplification("(a)", "a");
-  }
-
-  private void assertSimplification(String unsimplified, String simplified) {
-    Regex regex = RegexUtils.parse(unsimplified);
-    assertEquals(simplified, regex.simplify().unparse());
-  }
-
-  @Test
   public void testSimplify() {
     assertSimplification(alt(chr('a'), chr('a')), chr('a'));
     assertSimplification(star(star(chr('a'))), star(chr('a')));
