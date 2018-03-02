@@ -19,12 +19,12 @@ import org.junit.Test;
 
 public class RegexTest {
   @Test
-  public void testCharacter() {
+  public void canMatchCharacters() {
     assertFalse(chr('a').match("b"));
   }
 
   @Test
-  public void testCharacterSequenceSize2() {
+  public void canMatchCharacterSequencesOfSize2() {
     SequenceRegex sequence = seq(chr('a'), chr('b'));
     assertFalse(sequence.match(""));
     assertFalse(sequence.match("a"));
@@ -35,7 +35,7 @@ public class RegexTest {
   }
 
   @Test
-  public void testCharacterSequenceSize3() {
+  public void canMatchCharacterSequencesOfSize3() {
     SequenceRegex sequence = seq(chr('a'), chr('b'), chr('c'));
     assertFalse(sequence.match(""));
     assertFalse(sequence.match("a"));
@@ -46,7 +46,7 @@ public class RegexTest {
   }
 
   @Test
-  public void testCharacterSequenceSize10() {
+  public void canMatchCharacterSequencesOfSize10() {
     SequenceRegex sequence = seq(chr('a'), chr('b'), chr('c'), chr('d'),
         chr('e'), chr('f'), chr('g'), chr('h'), chr('i'), chr('j'));
     assertFalse(sequence.match("abcdefghi"));
@@ -55,7 +55,7 @@ public class RegexTest {
   }
 
   @Test
-  public void testUnparsing() {
+  public void canUnparse() {
     GroupRegex group = grp(alt(chr('a'), chr('b')));
     PlusRegex plus = plus(grp(opt(chr('f'))));
     SequenceRegex sequence = seq(group, chr('c'), plus, star(dot()));
@@ -63,7 +63,7 @@ public class RegexTest {
   }
 
   @Test
-  public void testStar() {
+  public void canMatchStars() {
     StarRegex star = star(chr('a'));
     assertTrue(star.match(""));
     assertTrue(star.match("a"));
@@ -75,7 +75,7 @@ public class RegexTest {
   }
 
   @Test
-  public void testOptional() {
+  public void canMatchOptionals() {
     OptionalRegex optional = opt(chr('a'));
     assertTrue(optional.match(""));
     assertTrue(optional.match("a"));
@@ -85,7 +85,7 @@ public class RegexTest {
   }
 
   @Test
-  public void testPlus() {
+  public void canMatchPluses() {
     PlusRegex plus = plus(chr('a'));
     assertFalse(plus.match(""));
     assertTrue(plus.match("a"));
@@ -97,7 +97,7 @@ public class RegexTest {
   }
 
   @Test
-  public void testCharacterClass() {
+  public void canMatchCharacterClasses() {
     CharRange[] lowercaseRange = { chrr('a', 'z') };
     CharClassRegex lowercaseRegex = chrc(false, lowercaseRange);
     assertTrue(lowercaseRegex.match("a"));
@@ -115,7 +115,7 @@ public class RegexTest {
   }
 
   @Test
-  public void testTrickyUnparsing() {
+  public void canProperlyWrapSubRegexesInGroupsWhenUnparsing() {
     Regex[] ab = { chr('a'), chr('b') };
     Regex[] cd = { chr('c'), chr('d') };
     Regex[] ef = { chr('e'), chr('f') };
@@ -130,7 +130,7 @@ public class RegexTest {
   }
 
   @Test
-  public void testHashCodeAndEquals() {
+  public void canUseHashCodeAndEquals() {
     assertEquals(dot().hashCode(), dot().hashCode());
     assertEquals(dot(), dot());
 
@@ -145,7 +145,7 @@ public class RegexTest {
   }
 
   @Test
-  public void testSimplify() {
+  public void canSimplify() {
     assertSimplification(alt(chr('a'), chr('a')), chr('a'));
     assertSimplification(star(star(chr('a'))), star(chr('a')));
     assertSimplification(star(seq(star(chr('a')), star(chr('b')))),

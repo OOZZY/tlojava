@@ -12,7 +12,7 @@ public class RegexParserTest {
       .getLogger(RegexParserTest.class);
 
   @Test
-  public void testParsing() {
+  public void parserParsesValidRegexes() {
     RegexParser parser = new RegexParser();
     assertParseSucceeds(parser, "a");
     assertParseSucceeds(parser, "a*");
@@ -24,7 +24,7 @@ public class RegexParserTest {
   }
 
   @Test
-  public void testParsingCharacterClasses() {
+  public void parserParsesValidRegexesWithCharacterClasses() {
     RegexParser parser = new RegexParser();
     assertParseSucceeds(parser, "[a]");
     assertParseSucceeds(parser, "[a0]");
@@ -49,7 +49,7 @@ public class RegexParserTest {
   }
 
   @Test
-  public void testParsingFailure() {
+  public void parsesFailsForInvalidRegexes() {
     RegexParser parser = new RegexParser();
     assertParseFails(parser, "");
     assertParseFails(parser, "(a");
@@ -59,7 +59,7 @@ public class RegexParserTest {
   }
 
   @Test
-  public void testParsingCharacterClassesFailure() {
+  public void parsesFailsForRegexesWithInvalidCharacterClasses() {
     RegexParser parser = new RegexParser();
     assertParseFails(parser, "[^a");
     assertParseFails(parser, "[a");
