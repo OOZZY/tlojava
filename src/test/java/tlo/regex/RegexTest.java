@@ -59,12 +59,11 @@ public class RegexTest {
   }
 
   @Test
-  public void testToRegexString() {
+  public void testUnparsing() {
     GroupRegex group = grp(alt(chr('a'), chr('b')));
     PlusRegex plus = plus(grp(opt(chr('f'))));
     SequenceRegex sequence = seq(group, chr('c'), plus, star(dot()));
-    logger.debug(sequence);
-    logger.debug(sequence.unparse());
+    assertEquals("(a|b)c(f?)+.*", sequence.unparse());
   }
 
   @Test
@@ -120,7 +119,7 @@ public class RegexTest {
   }
 
   @Test
-  public void testUnparsing() {
+  public void testTrickyUnparsing() {
     Regex[] ab = { chr('a'), chr('b') };
     Regex[] cd = { chr('c'), chr('d') };
     Regex[] ef = { chr('e'), chr('f') };
