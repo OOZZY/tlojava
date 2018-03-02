@@ -183,6 +183,18 @@ public class RegexTest {
 
     SequenceRegex dotThenDot = new SequenceRegex(Arrays.asList(dot1, dot2));
     assertNotEquals(dotOrDot1, dotThenDot);
+  }
 
+  @Test
+  public void testSimplification() {
+    assertSimplification("a|a", "a");
+    assertSimplification("(a*)*", "a*");
+    assertSimplification("(a*b*)*", "(a|b)*");
+    assertSimplification("(a)", "a");
+  }
+
+  private void assertSimplification(String unsimplified, String simplified) {
+    Regex regex = RegexUtils.parse(unsimplified);
+    assertEquals(simplified, regex.simplify().unparse());
   }
 }

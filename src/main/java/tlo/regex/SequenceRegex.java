@@ -40,4 +40,11 @@ public class SequenceRegex extends AbstractRecursiveRegexList {
     return sequenceAndItems.stream().map(Regex::unparse)
         .collect(Collectors.joining(""));
   }
+
+  @Override
+  public Regex simplify() {
+    List<Regex> simplifiedRegexes = regexes.stream().map(Regex::simplify)
+        .collect(Collectors.toList());
+    return new SequenceRegex(simplifiedRegexes);
+  }
 }

@@ -6,10 +6,14 @@ public abstract class AbstractRecursiveRegexList implements Regex {
   protected List<Regex> regexes;
 
   public AbstractRecursiveRegexList(List<Regex> regexes) {
+    expectMoreThanOneRegex(regexes);
+    this.regexes = regexes;
+  }
+
+  static void expectMoreThanOneRegex(List<Regex> regexes) {
     if (regexes.size() < 2) {
       throw new IllegalArgumentException("Regex list has less than 2 regexes.");
     }
-    this.regexes = regexes;
   }
 
   public List<Regex> getRegexes() {

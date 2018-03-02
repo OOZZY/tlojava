@@ -23,4 +23,9 @@ public class PlusRegex extends AbstractRecursiveRegex {
   public String unparse() {
     return RegexUtils.forceToElement(regex).unparse() + "+";
   }
+
+  @Override
+  public Regex simplify() {
+    return new PlusRegex(regex.simplify());
+  }
 }

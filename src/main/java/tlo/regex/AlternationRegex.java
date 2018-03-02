@@ -33,4 +33,23 @@ public class AlternationRegex extends AbstractRecursiveRegexList {
     return regexAndSequences.stream().map(Regex::unparse)
         .collect(Collectors.joining("|"));
   }
+
+  @Override
+  public Regex simplify() {
+    List<Regex> simplifiedRegexes = regexes.stream().map(Regex::simplify)
+        .collect(Collectors.toList());
+    return createSimplifiedAlternationRegex(simplifiedRegexes);
+  }
+
+  static Regex createSimplifiedAlternationRegex(List<Regex> regexes) {
+    AbstractRecursiveRegexList.expectMoreThanOneRegex(regexes);
+
+    List<Regex> distinctRegexes = regexes.stream().distinct()
+        .collect(Collectors.toList());
+    if (distinctRegexes.size() < 2) {
+      return distinctRegexes.get(0);
+    } else {
+      return new AlternationRegex(distinctRegexes);
+    }
+  }
 }

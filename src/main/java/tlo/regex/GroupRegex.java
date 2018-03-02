@@ -19,4 +19,9 @@ public class GroupRegex extends AbstractRecursiveRegex {
   public String unparse() {
     return "(" + regex.unparse() + ")";
   }
+
+  @Override
+  public Regex simplify() {
+    return regex.simplify();
+  }
 }
