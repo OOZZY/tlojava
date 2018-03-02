@@ -48,6 +48,13 @@ public class RegexIntegrationTest {
     assertSimplification("(a*)*", "a*");
     assertSimplification("(a*b*)*", "(a|b)*");
     assertSimplification("(a)", "a");
+
+    assertSimplification("a|a|a", "a");
+    assertSimplification("a|b|a", "a|b");
+    assertSimplification("((a*)*)*", "a*");
+    assertSimplification("(a*b*c*)*", "(a|b|c)*");
+    assertSimplification("(a*b*a*)*", "(a|b)*");
+    assertSimplification("((a))", "a");
   }
 
   private void assertSimplification(String unsimplified, String simplified) {
