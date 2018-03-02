@@ -4,9 +4,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
+import static tlo.regex.RegexUtils.alt;
+import static tlo.regex.RegexUtils.chr;
+import static tlo.regex.RegexUtils.chrc;
+import static tlo.regex.RegexUtils.chrr;
+import static tlo.regex.RegexUtils.dot;
+import static tlo.regex.RegexUtils.grp;
+import static tlo.regex.RegexUtils.opt;
+import static tlo.regex.RegexUtils.plus;
+import static tlo.regex.RegexUtils.seq;
+import static tlo.regex.RegexUtils.star;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,14 +24,12 @@ public class RegexTest {
 
   @Test
   public void testCharacter() {
-    CharRegex character = new CharRegex('a');
-    assertFalse(character.match("b"));
+    assertFalse(chr('a').match("b"));
   }
 
   @Test
   public void testCharacterSequenceSize2() {
-    SequenceRegex sequence = new SequenceRegex(
-        Arrays.asList(new CharRegex('a'), new CharRegex('b')));
+    SequenceRegex sequence = seq(chr('a'), chr('b'));
     assertFalse(sequence.match(""));
     assertFalse(sequence.match("a"));
     assertFalse(sequence.match("b"));
@@ -35,8 +40,7 @@ public class RegexTest {
 
   @Test
   public void testCharacterSequenceSize3() {
-    SequenceRegex sequence = new SequenceRegex(Arrays.asList(new CharRegex('a'),
-        new CharRegex('b'), new CharRegex('c')));
+    SequenceRegex sequence = seq(chr('a'), chr('b'), chr('c'));
     assertFalse(sequence.match(""));
     assertFalse(sequence.match("a"));
     assertFalse(sequence.match("b"));
@@ -47,10 +51,8 @@ public class RegexTest {
 
   @Test
   public void testCharacterSequenceSize10() {
-    SequenceRegex sequence = new SequenceRegex(Arrays.asList(new CharRegex('a'),
-        new CharRegex('b'), new CharRegex('c'), new CharRegex('d'),
-        new CharRegex('e'), new CharRegex('f'), new CharRegex('g'),
-        new CharRegex('h'), new CharRegex('i'), new CharRegex('j')));
+    SequenceRegex sequence = seq(chr('a'), chr('b'), chr('c'), chr('d'),
+        chr('e'), chr('f'), chr('g'), chr('h'), chr('i'), chr('j'));
     assertFalse(sequence.match("abcdefghi"));
     assertTrue(sequence.match("abcdefghij"));
     assertFalse(sequence.match("abcdefghijk"));
@@ -58,28 +60,16 @@ public class RegexTest {
 
   @Test
   public void testToRegexString() {
-    AlternationRegex alternation = new AlternationRegex(
-        Arrays.asList(new CharRegex('a'), new CharRegex('b')));
-    GroupRegex group1 = new GroupRegex(alternation);
-
-    CharRegex character = new CharRegex('c');
-
-    OptionalRegex optional = new OptionalRegex(new CharRegex('f'));
-    GroupRegex group2 = new GroupRegex(optional);
-    PlusRegex plus = new PlusRegex(group2);
-
-    DotRegex dot = new DotRegex();
-    StarRegex star = new StarRegex(dot);
-
-    SequenceRegex sequence = new SequenceRegex(
-        Arrays.asList(group1, character, plus, star));
+    GroupRegex group = grp(alt(chr('a'), chr('b')));
+    PlusRegex plus = plus(grp(opt(chr('f'))));
+    SequenceRegex sequence = seq(group, chr('c'), plus, star(dot()));
     logger.debug(sequence);
     logger.debug(sequence.unparse());
   }
 
   @Test
   public void testStar() {
-    StarRegex star = new StarRegex(new CharRegex('a'));
+    StarRegex star = star(chr('a'));
     assertTrue(star.match(""));
     assertTrue(star.match("a"));
     assertTrue(star.match("aa"));
@@ -91,7 +81,7 @@ public class RegexTest {
 
   @Test
   public void testOptional() {
-    OptionalRegex optional = new OptionalRegex(new CharRegex('a'));
+    OptionalRegex optional = opt(chr('a'));
     assertTrue(optional.match(""));
     assertTrue(optional.match("a"));
     assertFalse(optional.match("aa"));
@@ -101,7 +91,7 @@ public class RegexTest {
 
   @Test
   public void testPlus() {
-    PlusRegex plus = new PlusRegex(new CharRegex('a'));
+    PlusRegex plus = plus(chr('a'));
     assertFalse(plus.match(""));
     assertTrue(plus.match("a"));
     assertTrue(plus.match("aa"));
@@ -113,15 +103,15 @@ public class RegexTest {
 
   @Test
   public void testCharacterClass() {
-    List<CharRange> lowercaseRange = Arrays.asList(new CharRange('a', 'z'));
-    CharClassRegex lowercaseRegex = new CharClassRegex(false, lowercaseRange);
+    CharRange[] lowercaseRange = { chrr('a', 'z') };
+    CharClassRegex lowercaseRegex = chrc(false, lowercaseRange);
     assertTrue(lowercaseRegex.match("a"));
     assertTrue(lowercaseRegex.match("m"));
     assertTrue(lowercaseRegex.match("z"));
     assertFalse(lowercaseRegex.match("A"));
     assertFalse(lowercaseRegex.match("0"));
 
-    CharClassRegex nonLowercaseRegex = new CharClassRegex(true, lowercaseRange);
+    CharClassRegex nonLowercaseRegex = chrc(true, lowercaseRange);
     assertFalse(nonLowercaseRegex.match("a"));
     assertFalse(nonLowercaseRegex.match("m"));
     assertFalse(nonLowercaseRegex.match("z"));
@@ -131,58 +121,32 @@ public class RegexTest {
 
   @Test
   public void testUnparsing() {
-    List<Regex> ab = Arrays.asList(new CharRegex('a'), new CharRegex('b'));
-    List<Regex> cd = Arrays.asList(new CharRegex('c'), new CharRegex('d'));
-    List<Regex> ef = Arrays.asList(new CharRegex('e'), new CharRegex('f'));
-    AlternationRegex aOrB = new AlternationRegex(ab);
-    AlternationRegex cOrD = new AlternationRegex(cd);
-    AlternationRegex eOrF = new AlternationRegex(ef);
-    SequenceRegex aThenB = new SequenceRegex(ab);
-    SequenceRegex cThenD = new SequenceRegex(cd);
-    SequenceRegex eThenF = new SequenceRegex(ef);
-    List<Regex> alternationList = Arrays.asList(aOrB, cOrD, eOrF);
-    List<Regex> sequenceList = Arrays.asList(aThenB, cThenD, eThenF);
+    Regex[] ab = { chr('a'), chr('b') };
+    Regex[] cd = { chr('c'), chr('d') };
+    Regex[] ef = { chr('e'), chr('f') };
+    Regex[] alternations = { alt(ab), alt(cd), alt(ef) };
+    Regex[] sequences = { seq(ab), seq(cd), seq(ef) };
 
-    Regex trickyToUnparse = new StarRegex(aThenB);
-    assertEquals("(ab)*", trickyToUnparse.unparse());
-
-    Regex alternationOfAlternations = new AlternationRegex(alternationList);
-    assertEquals("a|b|(c|d)|(e|f)", alternationOfAlternations.unparse());
-
-    Regex alternationOfSequences = new AlternationRegex(sequenceList);
-    assertEquals("ab|cd|ef", alternationOfSequences.unparse());
-
-    Regex sequenceOfAlternations = new SequenceRegex(alternationList);
-    assertEquals("(a|b)(c|d)(e|f)", sequenceOfAlternations.unparse());
-
-    Regex sequenceOfSequences = new SequenceRegex(sequenceList);
-    assertEquals("ab(cd)(ef)", sequenceOfSequences.unparse());
+    assertEquals("(ab)*", star(seq(ab)).unparse());
+    assertEquals("a|b|(c|d)|(e|f)", alt(alternations).unparse());
+    assertEquals("ab|cd|ef", alt(sequences).unparse());
+    assertEquals("(a|b)(c|d)(e|f)", seq(alternations).unparse());
+    assertEquals("ab(cd)(ef)", seq(sequences).unparse());
   }
 
   @Test
   public void testHashCodeAndEquals() {
-    DotRegex dot1 = new DotRegex();
-    DotRegex dot2 = new DotRegex();
-    assertEquals(dot1.hashCode(), dot2.hashCode());
-    assertEquals(dot1, dot2);
+    assertEquals(dot().hashCode(), dot().hashCode());
+    assertEquals(dot(), dot());
 
-    StarRegex dotStar1 = new StarRegex(dot1);
-    StarRegex dotStar2 = new StarRegex(dot2);
-    assertEquals(dotStar1.hashCode(), dotStar2.hashCode());
-    assertEquals(dotStar1, dotStar2);
+    assertEquals(star(dot()).hashCode(), star(dot()).hashCode());
+    assertEquals(star(dot()), star(dot()));
 
-    AlternationRegex dotOrDot1 = new AlternationRegex(
-        Arrays.asList(dot1, dot2));
-    AlternationRegex dotOrDot2 = new AlternationRegex(
-        Arrays.asList(dot2, dot1));
-    assertEquals(dotOrDot1.hashCode(), dotOrDot2.hashCode());
-    assertEquals(dotOrDot1, dotOrDot2);
+    assertEquals(alt(dot(), dot()).hashCode(), alt(dot(), dot()).hashCode());
+    assertEquals(alt(dot(), dot()), alt(dot(), dot()));
 
-    PlusRegex dotPlus = new PlusRegex(dot1);
-    assertNotEquals(dotStar1, dotPlus);
-
-    SequenceRegex dotThenDot = new SequenceRegex(Arrays.asList(dot1, dot2));
-    assertNotEquals(dotOrDot1, dotThenDot);
+    assertNotEquals(star(dot()), plus(dot()));
+    assertNotEquals(alt(dot(), dot()), seq(dot(), dot()));
   }
 
   @Test

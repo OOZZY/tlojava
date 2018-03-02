@@ -1,5 +1,7 @@
 package tlo.regex;
 
+import java.util.Arrays;
+
 public class RegexUtils {
   static boolean matchAnySplit(Regex regex1, Regex regex2, String string) {
     if (string.isEmpty()) {
@@ -77,5 +79,49 @@ public class RegexUtils {
       return new GroupRegex(regex);
     }
     return regex;
+  }
+
+  static DotRegex dot() {
+    return new DotRegex();
+  }
+
+  static CharRegex chr(char ch) {
+    return new CharRegex(ch);
+  }
+
+  static CharRange chrr(char ch) {
+    return new CharRange(ch, ch);
+  }
+
+  static CharRange chrr(char first, char last) {
+    return new CharRange(first, last);
+  }
+
+  static CharClassRegex chrc(boolean negated, CharRange... charRanges) {
+    return new CharClassRegex(negated, Arrays.asList(charRanges));
+  }
+
+  static GroupRegex grp(Regex regex) {
+    return new GroupRegex(regex);
+  }
+
+  static StarRegex star(Regex regex) {
+    return new StarRegex(regex);
+  }
+
+  static OptionalRegex opt(Regex regex) {
+    return new OptionalRegex(regex);
+  }
+
+  static PlusRegex plus(Regex regex) {
+    return new PlusRegex(regex);
+  }
+
+  static SequenceRegex seq(Regex... regexes) {
+    return new SequenceRegex(Arrays.asList(regexes));
+  }
+
+  static AlternationRegex alt(Regex... regexes) {
+    return new AlternationRegex(Arrays.asList(regexes));
   }
 }
